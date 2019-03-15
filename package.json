@@ -1,0 +1,17 @@
+{
+  "name": "carto-batch-api-client",
+  "version": "0.0.1",
+  "description": " ",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "mocha": "^6.0.2"
+  }
+}
