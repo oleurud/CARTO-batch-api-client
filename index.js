@@ -10,14 +10,12 @@ const STATUS_FAILED = 'failed'
 const STATUS_CANCELLED = 'cancelled'
 const STATUS_UNKNOWN = 'unknown'
 
-let INITIAL_READ_DELAY = 100
-
+let READ_RETRY_DELAY = 100
 
 module.exports = class Client {
     constructor(username, apiKey) {
         this.username = username
         this.apiKey = apiKey
-        this.retry_read_delay = INITIAL_READ_DELAY
     }
 
     async batch(query) {
@@ -31,7 +29,6 @@ module.exports = class Client {
             return { error: 'Something goes wrong' }
         }
 
-        this.retry_read_delay = INITIAL_READ_DELAY
         return this._readRecursive(job.job_id).catch(error => error);
     }
 
@@ -40,7 +37,7 @@ module.exports = class Client {
         return this._call(options)
     }
 
-    async _readRecursive(jobId) {
+    async _readRecursive(jobId, retry_delay = READ_RETRY_DELAY) {
         const options = this._getCallOptions({ jobId, method: 'GET' })
         const job = await this._call(options)
 
@@ -55,9 +52,8 @@ module.exports = class Client {
         }
 
         if ([STATUS_PENDING, STATUS_RUNNNING].includes(job.status)) {
-            await new Promise(resolve => setTimeout(resolve, this.retry_read_delay));
-            this.retry_read_delay *= 2
-            return this._readRecursive(jobId)
+            await new Promise(resolve => setTimeout(resolve, retry_delay));
+            return this._readRecursive(jobId, retry_delay * 2)
         }
     }
 
@@ -97,4 +93,3 @@ module.exports = class Client {
         }
     }
 }
-
