@@ -17,10 +17,10 @@ describe('create', function () {
 
     it('creates one query', async function () {
         const query = 'SELECT 1234'
-        const response = await this.client._create(query)
-        assert.equal(response.user, parameters.username)
-        assert.equal(response.query, query)
-        assert.equal(response.status, 'pending')
+        const job = await this.client._create(query)
+        assert.equal(job.user, parameters.username)
+        assert.equal(job.query, query)
+        assert.equal(job.status, 'pending')
     });
 
     it('creates several querys', async function () {
@@ -30,9 +30,9 @@ describe('create', function () {
             'SELECT 3',
             'SELECT 4'
         ]
-        const response = await this.client._create(query)
-        assert.equal(response.user, parameters.username)
-        assert.deepEqual(response.query, [
+        const job = await this.client._create(query)
+        assert.equal(job.user, parameters.username)
+        assert.deepEqual(job.query, [
             {
                 "query": "SELECT 1",
                 "status": "pending"
@@ -50,6 +50,6 @@ describe('create', function () {
                 "status": "pending"
             }
         ])
-        assert.equal(response.status, 'pending')
+        assert.equal(job.status, 'pending')
     });
 });

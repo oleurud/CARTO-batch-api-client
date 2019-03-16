@@ -17,7 +17,17 @@ describe('batch', function () {
 
     it('create one query', async function () {
         const query = 'SELECT 1234'
-        const response = await this.client.batch(query)
-        assert.equal(response, '1234')
+        const job = await this.client.batch(query)
+        assert.equal(job.user, parameters.username)
+        assert.equal(job.query, query)
+        assert.equal(job.status, 'done')
+    });
+
+    it('create one query with delay', async function () {
+        const query = 'SELECT pg_sleep(0.15)'
+        const job = await this.client.batch(query)
+        assert.equal(job.user, parameters.username)
+        assert.equal(job.query, query)
+        assert.equal(job.status, 'done')
     });
 });
