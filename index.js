@@ -1,6 +1,7 @@
 'use strict'
 
 const request = require('request');
+const debug = require('debug')('carto-batch-api-client')
 
 const STATUS_PENDING = 'pending'
 const STATUS_RUNNNING = 'running'
@@ -38,6 +39,8 @@ module.exports = class Client {
         const options = this._getCallOptions({ jobId, method: 'GET' })
         const job = await this._call(options)
 
+        debug('_readRecursive', job.status)
+
         if (job.status === STATUS_DONE) {
             return Promise.resolve(job)
         }
@@ -55,7 +58,10 @@ module.exports = class Client {
 
     _call(options) {
         return new Promise((resolve, reject) => {
+            const initTime = new Date();
             request(options, function (error, response, body) {
+                debug('_call', `Response time: ${new Date() - initTime}ms`)
+
                 if (error) {
                     return reject(error)
                 }

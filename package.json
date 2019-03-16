@@ -4,11 +4,13 @@
   "description": " ",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive"
+    "test": "mocha --recursive",
+    "dev-test": "DEBUG=carto-batch-api-client* mocha --recursive --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "debug": "^4.1.1",
     "request": "^2.88.0"
   },
   "devDependencies": {
