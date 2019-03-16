@@ -23,7 +23,7 @@ describe('create', function () {
         assert.equal(job.status, 'pending')
     });
 
-    it('creates several querys', async function () {
+    it('creates several queries', async function () {
         const queries = [
             'SELECT 1',
             'SELECT 2'
