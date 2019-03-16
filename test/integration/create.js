@@ -24,13 +24,11 @@ describe('create', function () {
     });
 
     it('creates several querys', async function () {
-        const query = [
+        const queries = [
             'SELECT 1',
-            'SELECT 2',
-            'SELECT 3',
-            'SELECT 4'
+            'SELECT 2'
         ]
-        const job = await this.client._create(query)
+        const job = await this.client._create(queries)
         assert.equal(job.user, parameters.username)
         assert.deepEqual(job.query, [
             {
@@ -39,14 +37,6 @@ describe('create', function () {
             },
             {
                 "query": "SELECT 2",
-                "status": "pending"
-            },
-            {
-                "query": "SELECT 3",
-                "status": "pending"
-            },
-            {
-                "query": "SELECT 4",
                 "status": "pending"
             }
         ])
