@@ -21,13 +21,18 @@ module.exports = class Client {
     }
 
     async batch(query) {
-        const job = await this._create(query);
+        const job = await this._create(query).catch(error => error)
+
+        if (job.error) {
+            return job
+        }
+
         if (![STATUS_PENDING, STATUS_RUNNNING].includes(job.status) || !job.job_id) {
-            throw new Error('Something goes wrong')
+            return { error: 'Something goes wrong' }
         }
 
         this.retry_read_delay = INITIAL_READ_DELAY
-        return this._readRecursive(job.job_id);
+        return this._readRecursive(job.job_id).catch(error => error);
     }
 
     _create(query) {

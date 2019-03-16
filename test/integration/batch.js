@@ -8,10 +8,9 @@ describe('batch', function () {
     });
 
     it('fails without query', async function () {
-        await this.client.batch().catch(error => {
-            assert.deepEqual(error, {
-                error: ['You must indicate a valid SQL']
-            })
+        const response = await this.client.batch()
+        assert.deepEqual(response, {
+            error: ['You must indicate a valid SQL']
         })
     });
 
@@ -50,4 +49,24 @@ describe('batch', function () {
         ])
         assert.equal(job.status, 'done')
     });
+
+    // it.only('fails with right and wrong queries', async function () {
+    //     const queries = [
+    //         'SELECT 1',
+    //         'wrong query'
+    //     ]
+    //     const job = await this.client.batch(queries)
+    //     assert.equal(job.user, parameters.username)
+    //     assert.deepEqual(job.query, [
+    //         {
+    //             "query": "SELECT 1",
+    //             "status": "pending"
+    //         },
+    //         {
+    //             "query": "SELECT 2",
+    //             "status": "pending"
+    //         }
+    //     ])
+    //     assert.equal(job.status, 'pending')
+    // });
 });
