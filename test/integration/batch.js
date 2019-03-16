@@ -80,4 +80,40 @@ describe('batch', function () {
         assert.equal(job.status, 'failed')
         assert.equal(job.failed_reason, 'syntax error at or near "wrong"')
     });
+
+    it('batch several queries with fallbacks', async function () {
+        const queries = {
+            query: [
+                {
+                    query: "SELECT 1",
+                    onsuccess: "SELECT 2",
+                    onerror: "SELECT 3"
+                },
+                {
+                    query: "SELECT 4",
+                    onsuccess: "SELECT 5",
+                    onerror: "SELECT 6"
+                }
+            ],
+            onsuccess: "SELECT 7",
+            onerror: "SELECT 8"
+        }
+        const job = await this.client.batch(queries)
+
+        assert.equal(job.user, parameters.username)
+        assert.equal(job.query.query.length, 2);
+
+        assert.equal(job.query.onsuccess, "SELECT 7");
+        assert.equal(job.query.onerror, "SELECT 8");
+
+        assert.equal(job.query.query[0].query, "SELECT 1");
+        assert.equal(job.query.query[0].onsuccess, "SELECT 2");
+        assert.equal(job.query.query[0].onerror, "SELECT 3");
+
+        assert.equal(job.query.query[1].query, "SELECT 4");
+        assert.equal(job.query.query[1].onsuccess, "SELECT 5");
+        assert.equal(job.query.query[1].onerror, "SELECT 6");
+
+        assert.equal(job.status, 'done')
+    });
 });
