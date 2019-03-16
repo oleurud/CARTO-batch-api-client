@@ -144,7 +144,8 @@ const job = await client.batch(query)
     query: 'wrong query',
     created_at: '2019-03-16T18:24:10.260Z',
     updated_at: '2019-03-16T18:24:10.282Z',
-    failed_reason: 'syntax error at or near "wrong"',
+    failed_reason: 'syntax error at or near "wrong"'
+}
 ```
 
 Also, if you don't configure the Client in a proper way or you don't send a query:
