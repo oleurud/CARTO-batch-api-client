@@ -32,12 +32,12 @@ describe('create', function () {
         assert.equal(job.user, parameters.username)
         assert.deepEqual(job.query, [
             {
-                "query": "SELECT 1",
-                "status": "pending"
+                query: "SELECT 1",
+                status: "pending"
             },
             {
-                "query": "SELECT 2",
-                "status": "pending"
+                query: "SELECT 2",
+                status: "pending"
             }
         ])
         assert.equal(job.status, 'pending')

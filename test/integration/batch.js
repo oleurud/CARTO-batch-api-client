@@ -14,6 +14,15 @@ describe('batch', function () {
         })
     });
 
+    it('fails with wrong query', async function () {
+        const query = 'wrong query'
+        const job = await this.client.batch(query)
+        assert.equal(job.user, parameters.username)
+        assert.equal(job.query, query)
+        assert.equal(job.status, 'failed')
+        assert.equal(job.failed_reason, 'syntax error at or near "wrong"')
+    });
+
     it('batch one query', async function () {
         const query = 'SELECT 1234'
         const job = await this.client.batch(query)
@@ -39,34 +48,36 @@ describe('batch', function () {
         assert.equal(job.user, parameters.username)
         assert.deepEqual(job.query, [
             {
-                "query": "SELECT 1",
-                "status": "done"
+                query: "SELECT 1",
+                status: "done"
             },
             {
-                "query": "SELECT 2",
-                "status": "done"
+                query: "SELECT 2",
+                status: "done"
             }
         ])
         assert.equal(job.status, 'done')
     });
 
-    // it.only('fails with right and wrong queries', async function () {
-    //     const queries = [
-    //         'SELECT 1',
-    //         'wrong query'
-    //     ]
-    //     const job = await this.client.batch(queries)
-    //     assert.equal(job.user, parameters.username)
-    //     assert.deepEqual(job.query, [
-    //         {
-    //             "query": "SELECT 1",
-    //             "status": "pending"
-    //         },
-    //         {
-    //             "query": "SELECT 2",
-    //             "status": "pending"
-    //         }
-    //     ])
-    //     assert.equal(job.status, 'pending')
-    // });
+    it('fails with right and wrong queries', async function () {
+        const queries = [
+            'SELECT 1',
+            'wrong query'
+        ]
+        const job = await this.client.batch(queries)
+        assert.equal(job.user, parameters.username)
+        assert.deepEqual(job.query, [
+            {
+                query: "SELECT 1",
+                status: "done"
+            },
+            {
+                query: "wrong query",
+                status: "failed",
+                failed_reason: 'syntax error at or near "wrong"'
+            }
+        ])
+        assert.equal(job.status, 'failed')
+        assert.equal(job.failed_reason, 'syntax error at or near "wrong"')
+    });
 });
